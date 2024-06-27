@@ -12,9 +12,13 @@ _BEGIN_STD_C
 #if defined(__arm__) || defined(__thumb__)
 /*
  * All callee preserved registers:
- * v1 - v7, fp, ip, sp, lr, f4, f5, f6, f7
+ *  core registers:
+ *   r4 - r10, fp, sp, lr
+ *  VFP registers (architectural support dependent):
+ *   d8 - d15
  */
-#define _JBLEN 23
+#define _JBLEN 20
+#define _JBTYPE long long
 #endif
 
 #if defined(__aarch64__)
@@ -173,10 +177,18 @@ _BEGIN_STD_C
 #endif
 
 #ifdef __PPC__
+#ifdef __powerpc64__
+#ifdef __ALTIVEC__
+#define _JBLEN 70
+#else
+#define _JBLEN 43
+#endif
+#else
 #ifdef __ALTIVEC__
 #define _JBLEN 64
 #else
 #define _JBLEN 32
+#endif
 #endif
 #define _JBTYPE double
 #endif
@@ -246,7 +258,7 @@ _BEGIN_STD_C
 #endif
 
 #if (defined(__CR16__) || defined(__CR16C__) ||defined(__CR16CP__))
-/* r6, r7, r8, r9, r10, r11, r12 (r12L, r12H),
+/* r6, r7, r8, r9, r10, r11, r12 (r12L, r12H), 
  * r13 (r13L, r13H), ra(raL, raH), sp(spL, spH) */
 #define _JBLEN 14
 #define _JBTYPE unsigned short
@@ -283,7 +295,7 @@ _BEGIN_STD_C
 #endif
 
 #ifdef __SPU__
-#define _JBLEN 50
+#define _JBLEN 50 
 #define _JBTYPE __vector signed int
 #endif
 
@@ -340,7 +352,7 @@ _BEGIN_STD_C
  *   2) Function-call versions.
  *
  * The built-in versions are used most of the time.  When used, gcc replaces
- * calls to setjmp()/longjmp() with inline assembly code.  The built-in
+ * calls to setjmp()/longjmp() with inline assembly code.  The built-in 
  * versions save/restore a variable number of registers.
 
  * _JBLEN is set to 40 to be ultra-safe with the built-in versions.
@@ -374,6 +386,17 @@ _BEGIN_STD_C
 #define _JBLEN ((4*sizeof(long))/sizeof(long))
 #else
 #define _JBLEN ((14*sizeof(long) + 12*sizeof(double))/sizeof(long))
+#endif
+#endif
+
+#ifdef __CSKYABIV2__
+#define _JBTYPE unsigned long
+#if defined(__CK801__)
+#define _JBLEN 7
+#elif defined(__CK802__)
+#define _JBLEN 10
+#else
+#define _JBLEN 18
 #endif
 #endif
 

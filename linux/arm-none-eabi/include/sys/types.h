@@ -1,4 +1,4 @@
-/* unified sys/types.h:
+/* unified sys/types.h: 
    start with sef's sysvi386 version.
    merge go32 version -- a few ifdefs.
    h8300hms, h8300xray, and sysvnecv70 disagree on the following types:
@@ -10,8 +10,8 @@
    typedef int mode_t;
    typedef int caddr_t;
 
-   however, these aren't "reasonable" values, the sysvi386 ones make far
-   more sense, and should work sufficiently well (in particular, h8300
+   however, these aren't "reasonable" values, the sysvi386 ones make far 
+   more sense, and should work sufficiently well (in particular, h8300 
    doesn't have a stat, and the necv70 doesn't matter.) -- eichin
  */
 
@@ -29,7 +29,7 @@ typedef __uint8_t	u_int8_t;
 #endif
 #if ___int16_t_defined
 typedef __uint16_t	u_int16_t;
-#endif
+#endif 
 #if ___int32_t_defined
 typedef __uint32_t	u_int32_t;
 #endif
@@ -115,10 +115,8 @@ typedef	_TIME_T_	time_t;
 #define	_TIME_T_DECLARED
 #endif
 
-#ifndef __daddr_t_defined
-typedef	long	daddr_t;
-#define __daddr_t_defined
-#endif
+typedef	__daddr_t	daddr_t;
+
 #ifndef __caddr_t_defined
 typedef	char *	caddr_t;
 #define __caddr_t_defined

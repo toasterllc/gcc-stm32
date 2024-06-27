@@ -12,6 +12,7 @@ extern "C" {
 #include <sys/types.h>
 #include <sys/_sigset.h>
 #include <sys/_timespec.h>
+#include <stdint.h>
 
 #if !defined(_SIGSET_T_DECLARED)
 #define	_SIGSET_T_DECLARED
@@ -118,7 +119,7 @@ struct sigaction {
 
 typedef void (*_sig_func_ptr)(int);
 
-struct sigaction
+struct sigaction 
 {
 	_sig_func_ptr sa_handler;
 	sigset_t sa_mask;
@@ -168,9 +169,9 @@ int sigprocmask (int, const sigset_t *, sigset_t *);
 int pthread_sigmask (int, const sigset_t *, sigset_t *);
 #endif
 
-#ifdef _COMPILING_NEWLIB
+#ifdef _LIBC
 int _kill (pid_t, int);
-#endif /* _COMPILING_NEWLIB */
+#endif /* _LIBC */
 
 #if __POSIX_VISIBLE
 int kill (pid_t, int);
@@ -191,7 +192,7 @@ int sigsuspend (const sigset_t *);
 int sigwait (const sigset_t *, int *);
 
 #if !defined(__CYGWIN__) && !defined(__rtems__)
-/* These depend upon the type of sigset_t, which right now
+/* These depend upon the type of sigset_t, which right now 
    is always a long.. They're in the POSIX namespace, but
    are not ANSI. */
 #define sigaddset(what,sig) (*(what) |= (1<<(sig)), 0)
@@ -237,6 +238,22 @@ int sigtimedwait (const sigset_t *, siginfo_t *, const struct timespec *);
 int sigqueue (pid_t, int, const union sigval);
 
 #endif /* __POSIX_VISIBLE >= 199309 */
+
+/* Using __MISC_VISIBLE until POSIX Issue 8 is officially released */
+#if __MISC_VISIBLE
+
+/* POSIX Issue 8 adds sig2str() and str2sig() */
+
+#if __SIZEOF_INT__ >= 4
+#define SIG2STR_MAX 17	/* (sizeof("RTMAX+") + sizeof("4294967295") - 1) */
+#else
+#define SIG2STR_MAX 12	/* (sizeof("RTMAX+") + sizeof("65535") - 1) */
+#endif
+
+int sig2str(int, char *);
+int str2sig(const char *__restrict, int *__restrict);
+
+#endif /* __MISC_VISIBLE */
 
 #if defined(___AM29K__)
 /* These all need to be defined for ANSI C, but I don't think they are
@@ -329,7 +346,7 @@ int sigqueue (pid_t, int, const union sigval);
 #define	SIGCONT	25	/* continue a stopped process */
 #define	SIGTTIN	26	/* to readers pgrp upon background tty read */
 #define	SIGTTOU	27	/* like TTIN for output if (tp->t_local&LTOSTOP) */
-#define NSIG	28
+#define NSIG	28	
 #else
 #define	SIGURG	16	/* urgent condition on IO channel */
 #define	SIGSTOP	17	/* sendable stop signal not from tty */

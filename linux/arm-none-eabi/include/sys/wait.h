@@ -18,7 +18,7 @@ extern "C" {
       <code> == 7f, child has stopped, info was the signal number.
       <code> == 80, there was a core dump.
 */
-
+   
 #define WIFEXITED(w)	(((w) & 0xff) == 0)
 #define WIFSIGNALED(w)	(((w) & 0x7f) > 0 && (((w) & 0x7f) < 0x7f))
 #define WIFSTOPPED(w)	(((w) & 0xff) == 0x7f)
@@ -29,7 +29,7 @@ extern "C" {
 pid_t wait (int *);
 pid_t waitpid (pid_t, int *, int);
 
-#ifdef _COMPILING_NEWLIB
+#ifdef _LIBC
 pid_t _wait (int *);
 #endif
 

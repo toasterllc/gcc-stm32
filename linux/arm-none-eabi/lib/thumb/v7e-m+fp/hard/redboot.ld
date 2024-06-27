@@ -90,8 +90,8 @@ SECTIONS
     *(.gnu.linkonce.t*)
     *(.glue_7t) *(.glue_7)
   } =0
-  .init          :
-  {
+  .init          : 
+  { 
     KEEP (*(.init))
   } =0
   _etext = .;
@@ -116,7 +116,7 @@ SECTIONS
   .data1   : { *(.data1) }
   .eh_frame : { KEEP (*(.eh_frame)) }
   .gcc_except_table : { *(.gcc_except_table) }
-  .ctors   :
+  .ctors   : 
   {
     /* gcc uses crtbegin.o to find the start of
        the constructors, so we make sure it is
@@ -149,9 +149,9 @@ SECTIONS
   /* We want the small data sections together, so single-instruction offsets
      can access them all, and initialized data all before uninitialized, so
      we can shorten the on-disk segment size.  */
-  .sdata     :
+  .sdata     : 
   {
-    *(.sdata)
+    *(.sdata) 
     *(.sdata.*)
     *(.gnu.linkonce.s.*)
   }

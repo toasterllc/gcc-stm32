@@ -32,13 +32,13 @@
 
 _BEGIN_STD_C
 
-typedef struct
+typedef struct 
 {
   int quot; /* quotient */
   int rem; /* remainder */
 } div_t;
 
-typedef struct
+typedef struct 
 {
   long quot; /* quotient */
   long rem; /* remainder */

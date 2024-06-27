@@ -33,13 +33,13 @@
       and do not supply functional interfaces for any of the reentrant
       calls. With this method, the reentrant syscalls are redefined to
       directly call the regular system call without the reentrancy argument.
-      When you do this, specify both -DREENTRANT_SYSCALLS_PROVIDED and
+      When you do this, specify both -DREENTRANT_SYSCALLS_PROVIDED and 
       -DMISSING_SYSCALL_NAMES via newlib_cflags in configure.host and do
       not specify "syscall_dir".
 
    Stubs of the reentrant versions of the syscalls exist in the libc/reent
-   source directory and are provided if REENTRANT_SYSCALLS_PROVIDED isn't
-   defined.  These stubs call the native system calls: _open, _close, etc.
+   source directory and are provided if REENTRANT_SYSCALLS_PROVIDED isn't 
+   defined.  These stubs call the native system calls: _open, _close, etc. 
    if MISSING_SYSCALL_NAMES is *not* defined, otherwise they call the
    non-underscored versions: open, close, etc. when MISSING_SYSCALL_NAMES
    *is* defined.
@@ -51,17 +51,17 @@
    keep a separate errno value which is intuitive since the application flow
    cannot check for failure reliably otherwise.
 
-   The reentrant syscalls are either provided by the platform, by the
-   libc/reent stubs, or in the case of both MISSING_SYSCALL_NAMES and
+   The reentrant syscalls are either provided by the platform, by the 
+   libc/reent stubs, or in the case of both MISSING_SYSCALL_NAMES and 
    REENTRANT_SYSCALLS_PROVIDED being defined, the calls are redefined to
    simply call the regular syscalls with no reentrancy struct argument.
 
    A single-threaded application does not need to worry about the reentrancy
-   structure.  It is used internally.
+   structure.  It is used internally.  
 
-   A multi-threaded application needs either to manually manage reentrancy
+   A multi-threaded application needs either to manually manage reentrancy 
    structures or use dynamic reentrancy.
-
+   
    Manually managing reentrancy structures entails calling special reentrant
    versions of newlib functions that have an additional reentrancy argument.
    For example, _printf_r.  By convention, the first argument is the
@@ -76,7 +76,7 @@
    to __getreent().  This function needs to be implemented by the platform
    and it is meant to return the reentrancy structure for the current
    thread.  When the regular C functions (e.g. printf) go to call internal
-   routines with the default _REENT structure, they end up calling with
+   routines with the default _REENT structure, they end up calling with 
    the reentrancy structure for the thread.  Thus, application code does not
    need to call the _r routines nor worry about reentrancy structures.  */
 
@@ -125,6 +125,7 @@ struct timezone;
 #define _unlink_r(__reent, __path)                unlink(__path)
 #define _wait_r(__reent, __status)                wait(__status)
 #define _write_r(__reent, __fd, __buff, __cnt)    write(__fd, __buff, __cnt)
+#define _getentropy_r(__reent, __buff, __cnt)     getentropy(__buff, __cnt)
 #define _gettimeofday_r(__reent, __tp, __tzp)     gettimeofday(__tp, __tzp)
 
 #ifdef __LARGE64_FILES
@@ -156,6 +157,7 @@ extern _CLOCK_T_ _times_r (struct _reent *, struct tms *);
 extern int _unlink_r (struct _reent *, const char *);
 extern int _wait_r (struct _reent *, int *);
 extern _ssize_t _write_r (struct _reent *, int, const void *, size_t);
+extern int _getentropy_r (struct _reent *, void *, size_t);
 
 /* This one is not guaranteed to be available on all targets.  */
 extern int _gettimeofday_r (struct _reent *, struct timeval *__tp, void *__tzp);
@@ -174,7 +176,7 @@ extern int _open64_r (struct _reent *, const char *, int, int);
 extern int _stat64_r (struct _reent *, const char *, struct stat64 *);
 
 /* Don't pollute namespace if not building newlib. */
-#if defined (__CYGWIN__) && !defined (_COMPILING_NEWLIB)
+#if defined (__CYGWIN__) && !defined (_LIBC)
 #undef stat64
 #endif
 

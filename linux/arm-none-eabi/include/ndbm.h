@@ -40,6 +40,7 @@
 #ifndef _NDBM_H_
 #define	_NDBM_H_
 
+#include <sys/types.h>	/* For mode_t. */
 /* #include <db.h> */
 
 /*
@@ -48,7 +49,7 @@
  * directory and not in `newlib/libc/include`.
  * Necessary data-types are mentioned in form of forward-declarations
  */
-
+   
 /* Map dbm interface onto db(3). */
 #define DBM_RDONLY	O_RDONLY
 

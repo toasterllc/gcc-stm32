@@ -30,7 +30,7 @@ struct mallinfo {
   size_t uordblks; /* total allocated space */
   size_t fordblks; /* total non-inuse space */
   size_t keepcost; /* top-most, releasable (via malloc_trim) space */
-};
+};	
 
 /* The routines.  */
 
@@ -155,10 +155,10 @@ extern void _mstats_r (struct _reent *, char *);
 #define M_KEEP    4    /* UNUSED in this malloc */
 
 /* mallopt options that actually do something */
-
+  
 #define M_TRIM_THRESHOLD    -1
 #define M_TOP_PAD           -2
-#define M_MMAP_THRESHOLD    -3
+#define M_MMAP_THRESHOLD    -3 
 #define M_MMAP_MAX          -4
 
 #ifndef __CYGWIN__

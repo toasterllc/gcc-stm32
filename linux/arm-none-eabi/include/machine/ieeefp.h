@@ -15,7 +15,7 @@
 
 	Defined if the float format does not support IEEE denormals.  Every
 	float with a zero exponent is taken to be a zero representation.
-
+ 
    ??? At the moment, there are no equivalent macros above for doubles and
    the macros are not fully supported by --enable-newlib-hw-fp.
 
@@ -25,7 +25,7 @@
         with __IEEE_LITTLE_ENDIAN.
 
    __IEEE_LITTLE_ENDIAN
-
+ 
         Defined if the float format is little endian.  This is mutually exclusive
         with __IEEE_BIG_ENDIAN.
 
@@ -34,11 +34,11 @@
 
    __IEEE_BYTES_LITTLE_ENDIAN
 
-        This flag is used in conjunction with __IEEE_BIG_ENDIAN to describe a situation
+        This flag is used in conjunction with __IEEE_BIG_ENDIAN to describe a situation 
 	whereby multiple words of an IEEE floating point are in big endian order, but the
 	words themselves are little endian with respect to the bytes.
 
-   _DOUBLE_IS_32BITS
+   _DOUBLE_IS_32BITS 
 
         This is used on platforms that support double by using the 32-bit IEEE
         float type.
@@ -47,7 +47,7 @@
 
         This represents what type a float arg is passed as.  It is used when the type is
         not promoted to double.
-
+	
 
    __OBSOLETE_MATH_DEFAULT
 
@@ -87,6 +87,16 @@
 #  define __IEEE_BYTES_LITTLE_ENDIAN
 # endif
 #endif
+#ifndef __SOFTFP__
+# define _SUPPORTS_ERREXCEPT
+#endif
+/* As per ISO/IEC TS 18661 '__FLT_EVAL_METHOD__' will be defined to 16
+   (if compiling with +fp16 support) so it can't be used by math.h to
+   define float_t and double_t.  For values of '__FLT_EVAL_METHOD__'
+   other than 0, 1, 2 the definition of float_t and double_t is
+   implementation-defined.  */
+#define __DOUBLE_TYPE double
+#define __FLOAT_TYPE float
 #endif
 
 #if defined (__aarch64__)
@@ -96,6 +106,16 @@
 #define __IEEE_BIG_ENDIAN
 #endif
 #define __OBSOLETE_MATH_DEFAULT 0
+#ifdef __ARM_FP
+# define _SUPPORTS_ERREXCEPT
+#endif
+/* As per ISO/IEC TS 18661 '__FLT_EVAL_METHOD__' will be defined to 16
+   (if compiling with +fp16 support) so it can't be used by math.h to
+   define float_t and double_t.  For values of '__FLT_EVAL_METHOD__'
+   other than 0, 1, 2 the definition of float_t and double_t is
+   implementation-defined.  */
+#define __DOUBLE_TYPE double
+#define __FLOAT_TYPE float
 #endif
 
 #ifdef __epiphany__
@@ -189,10 +209,23 @@
 
 #ifdef __i386__
 #define __IEEE_LITTLE_ENDIAN
+# define _SUPPORTS_ERREXCEPT
 #endif
 
 #ifdef __riscv
+#if defined(__BYTE_ORDER__) && (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+#define __IEEE_BIG_ENDIAN
+#else
 #define __IEEE_LITTLE_ENDIAN
+#endif
+#ifdef __riscv_flen
+# define _SUPPORTS_ERREXCEPT
+#endif
+#if __riscv_flen == 64
+# define __OBSOLETE_MATH_DEFAULT 0
+#else
+# define __OBSOLETE_MATH_DEFAULT 1
+#endif
 #endif
 
 #ifdef __i960__
@@ -308,6 +341,14 @@
 #define __IEEE_LITTLE_ENDIAN
 #endif
 
+#ifdef __CSKY__
+#ifdef __CSKYBE__
+#define __IEEE_BIG_ENDIAN
+#else
+#define __IEEE_LITTLE_ENDIAN
+#endif
+#endif
+
 #ifdef __fr30__
 #define __IEEE_BIG_ENDIAN
 #endif
@@ -386,6 +427,7 @@
 
 #ifdef __x86_64__
 #define __IEEE_LITTLE_ENDIAN
+# define _SUPPORTS_ERREXCEPT
 #endif
 
 #ifdef __mep__

@@ -16,10 +16,10 @@ _BEGIN_STD_C
 
 #ifdef __IEEE_BIG_ENDIAN
 
-typedef union
+typedef union 
 {
   double value;
-  struct
+  struct 
   {
     unsigned int sign : 1;
     unsigned int exponent: 11;
@@ -27,9 +27,9 @@ typedef union
     unsigned int fraction1:16;
     unsigned int fraction2:16;
     unsigned int fraction3:16;
-
+    
   } number;
-  struct
+  struct 
   {
     unsigned int sign : 1;
     unsigned int exponent: 11;
@@ -39,7 +39,7 @@ typedef union
     unsigned int function2:16;
     unsigned int function3:16;
   } nan;
-  struct
+  struct 
   {
     unsigned long msw;
     unsigned long lsw;
@@ -49,10 +49,10 @@ typedef union
 
 #elif defined __IEEE_LITTLE_ENDIAN
 
-typedef union
+typedef union 
 {
   double value;
-  struct
+  struct 
   {
 #ifdef __SMALL_BITFIELDS
     unsigned int fraction3:16;
@@ -66,7 +66,7 @@ typedef union
     unsigned int exponent :11;
     unsigned int sign     : 1;
   } number;
-  struct
+  struct 
   {
 #ifdef __SMALL_BITFIELDS
     unsigned int function3:16;
@@ -81,7 +81,7 @@ typedef union
     unsigned int exponent: 11;
     unsigned int sign : 1;
   } nan;
-  struct
+  struct 
   {
     unsigned long lsw;
     unsigned long msw;
@@ -98,14 +98,14 @@ typedef union
 typedef union
 {
   float value;
-  struct
+  struct 
   {
     unsigned int sign : 1;
     unsigned int exponent: 8;
     unsigned int fraction0: 7;
     unsigned int fraction1: 16;
   } number;
-  struct
+  struct 
   {
     unsigned int sign:1;
     unsigned int exponent:8;
@@ -114,7 +114,7 @@ typedef union
     unsigned int function1:16;
   } nan;
   long p1;
-
+  
 } __ieee_float_shape_type;
 
 #elif defined __IEEE_LITTLE_ENDIAN
@@ -122,14 +122,14 @@ typedef union
 typedef union
 {
   float value;
-  struct
+  struct 
   {
     unsigned int fraction0: 7;
     unsigned int fraction1: 16;
     unsigned int exponent: 8;
     unsigned int sign : 1;
   } number;
-  struct
+  struct 
   {
     unsigned int function1:16;
     unsigned int function0:6;
@@ -138,7 +138,7 @@ typedef union
     unsigned int sign:1;
   } nan;
   long p1;
-
+  
 } __ieee_float_shape_type;
 
 #endif /* __IEEE_LITTLE_ENDIAN */

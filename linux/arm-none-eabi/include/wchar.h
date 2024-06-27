@@ -91,7 +91,7 @@ int	wctob (wint_t);
 size_t	mbrlen (const char *__restrict, size_t, mbstate_t *__restrict);
 size_t	mbrtowc (wchar_t *__restrict, const char *__restrict, size_t,
 						mbstate_t *__restrict);
-size_t	_mbrtowc_r (struct _reent *, wchar_t * , const char * ,
+size_t	_mbrtowc_r (struct _reent *, wchar_t * , const char * , 
 			size_t, mbstate_t *);
 int	mbsinit (const mbstate_t *);
 #if __POSIX_VISIBLE >= 200809
@@ -109,11 +109,11 @@ size_t	_wcrtomb_r (struct _reent *, char * , wchar_t, mbstate_t *);
 size_t	wcsnrtombs (char *__restrict, const wchar_t **__restrict,
 				size_t, size_t, mbstate_t *__restrict);
 #endif
-size_t	_wcsnrtombs_r (struct _reent *, char * , const wchar_t ** ,
+size_t	_wcsnrtombs_r (struct _reent *, char * , const wchar_t ** , 
 			size_t, size_t, mbstate_t *);
 size_t	wcsrtombs (char *__restrict, const wchar_t **__restrict,
 				size_t, mbstate_t *__restrict);
-size_t	_wcsrtombs_r (struct _reent *, char * , const wchar_t ** ,
+size_t	_wcsrtombs_r (struct _reent *, char * , const wchar_t ** , 
 			size_t, mbstate_t *);
 #if __POSIX_VISIBLE >= 200809
 int	wcscasecmp (const wchar_t *, const wchar_t *);
@@ -320,14 +320,14 @@ int	_wscanf_r (struct _reent *, const wchar_t *, ...);
 
 #define getwc(fp)	fgetwc(fp)
 #define putwc(wc,fp)	fputwc((wc), (fp))
-#define getwchar()	fgetwc(_REENT->_stdin)
-#define putwchar(wc)	fputwc((wc), _REENT->_stdout)
+#define getwchar()	fgetwc(_REENT_STDIN(_REENT))
+#define putwchar(wc)	fputwc((wc), _REENT_STDOUT(_REENT))
 
 #if __GNU_VISIBLE
 #define getwc_unlocked(fp)	fgetwc_unlocked(fp)
 #define putwc_unlocked(wc,fp)	fputwc_unlocked((wc), (fp))
-#define getwchar_unlocked()	fgetwc_unlocked(_REENT->_stdin)
-#define putwchar_unlocked(wc)	fputwc_unlocked((wc), _REENT->_stdout)
+#define getwchar_unlocked()	fgetwc_unlocked(_REENT_STDIN(_REENT))
+#define putwchar_unlocked(wc)	fputwc_unlocked((wc), _REENT_STDOUT(_REENT))
 #endif
 
 _END_STD_C

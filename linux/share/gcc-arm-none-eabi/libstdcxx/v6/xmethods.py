@@ -1,6 +1,6 @@
 # Xmethods for libstdc++.
 
-# Copyright (C) 2014-2019 Free Software Foundation, Inc.
+# Copyright (C) 2014-2022 Free Software Foundation, Inc.
 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -586,11 +586,22 @@ class UniquePtrGetWorker(gdb.xmethod.XMethodWorker):
 
     def __call__(self, obj):
         impl_type = obj.dereference().type.fields()[0].type.tag
-        if re.match('^std::(__\d+::)?__uniq_ptr_impl<.*>$', impl_type): # New implementation
-            return obj['_M_t']['_M_t']['_M_head_impl']
+        # Check for new implementations first:
+        if re.match('^std::(__\d+::)?__uniq_ptr_(data|impl)<.*>$', impl_type):
+            tuple_member = obj['_M_t']['_M_t']
         elif re.match('^std::(__\d+::)?tuple<.*>$', impl_type):
-            return obj['_M_t']['_M_head_impl']
-        return None
+            tuple_member = obj['_M_t']
+        else:
+            return None
+        tuple_impl_type = tuple_member.type.fields()[0].type # _Tuple_impl
+        tuple_head_type = tuple_impl_type.fields()[1].type   # _Head_base
+        head_field = tuple_head_type.fields()[0]
+        if head_field.name == '_M_head_impl':
+            return tuple_member.cast(tuple_head_type)['_M_head_impl']
+        elif head_field.is_base_class:
+            return tuple_member.cast(head_field.type)
+        else:
+            return None
 
 class UniquePtrDerefWorker(UniquePtrGetWorker):
     "Implements std::unique_ptr<T>::operator*()"
@@ -719,13 +730,16 @@ class SharedPtrUseCountWorker(gdb.xmethod.XMethodWorker):
     "Implements std::shared_ptr<T>::use_count()"
 
     def __init__(self, elem_type):
-        SharedPtrUseCountWorker.__init__(self, elem_type)
+        pass
 
     def get_arg_types(self):
         return None
 
     def get_result_type(self, obj):
         return gdb.lookup_type('long')
+
+    def _supports(self, method_name):
+        return True
 
     def __call__(self, obj):
         refcounts = obj['_M_refcount']['_M_pi']
@@ -767,7 +781,7 @@ class SharedPtrMethodsMatcher(gdb.xmethod.XMethodMatcher):
         if worker._supports(method_name):
             return worker
         return None
-
+
 def register_libstdcxx_xmethods(locus):
     gdb.xmethod.register_xmethod_matcher(locus, ArrayMethodsMatcher())
     gdb.xmethod.register_xmethod_matcher(locus, ForwardListMethodsMatcher())
